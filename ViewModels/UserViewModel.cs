@@ -16,12 +16,6 @@ namespace AuthenticationApp.ViewModels
             FullName = GetFullName(user.Firstname, user.Lastname);
 
             FromRussia = IsFromRussia(user.Email);
-
-            MailAddress email = new MailAddress(user.Email);
-
-            if (email.Host.Contains(".ru"))
-                FromRussia = true;
-            FromRussia = false;
         }
 
         private string GetFullName(string firstname, string lastname)

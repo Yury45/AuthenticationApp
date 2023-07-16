@@ -19,12 +19,12 @@ namespace AuthenticationApp.Models
                 Email = $"Admin@yandex.ru",
                 Password = $"admin",
                 Login = $"admin",
-                //Role = new Role()
-                //{
-                //    Id = 1,
-                //    Status = "Администратор"
-                //}
-                
+                Role = new Role()
+                {
+                    Id = 1,
+                    Status = "Администратор"
+                }
+
             });
 
             for (int i = 0; i < 4; i++)
@@ -37,11 +37,11 @@ namespace AuthenticationApp.Models
                     Email = $"User{i+1}Mail@gmail.com",
                     Password = $"password{i+1}",
                     Login = $"user{i+1}",
-                    //Role = new Role()
-                    //{
-                    //    Id = 2,
-                    //    Status = "Пользователь"
-                    //}
+                    Role = new Role()
+                    {
+                        Id = 2,
+                        Status = "Пользователь"
+                    }
                 });
             }
         }
