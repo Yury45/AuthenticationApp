@@ -1,6 +1,7 @@
 using AuthenticationApp.Models;
 using AuthenticationApp.Models.Interfaces;
 using AuthenticationApp.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,24 @@ namespace AuthenticationApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<ILogger, Logger>();
+
+            services.AddSingleton(new MapperConfiguration(v =>
+            {
+                v.AddProfile(new MappingProfile());
+            }).CreateMapper());
+
             services.AddControllers();
+            services.AddSwaggerGen();
+            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddAuthentication(optionts => optionts.DefaultScheme = "Cookies")
+                .AddCookie("Cookies", options => options.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
+                {
+                    OnRedirectToLogin = redirectContext =>
+                    {
+                        redirectContext.HttpContext.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    }
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,12 +54,17 @@ namespace AuthenticationApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    options.RoutePrefix = string.Empty;
+                });
             }
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
